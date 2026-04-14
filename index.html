@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>QuantaCalc</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav>
+  <a class="nav-brand" href="#" onclick="go('home');return false">QuantaCalc</a>
+
+  <div class="nav-links">
+    <button class="nav-link active" id="nl-home"    onclick="go('home')">Home</button>
+    <button class="nav-link"        id="nl-ops"     onclick="go('ops')">Operations</button>
+    <button class="nav-link"        id="nl-history" onclick="go('history')">History</button>
+  </div>
+
+  <div class="nav-right" id="nav-auth-area">
+    <button class="btn"             onclick="go('auth','login')">Log In</button>
+    <button class="btn btn-primary" onclick="go('auth','register')">Sign Up</button>
+  </div>
+</nav>
+
+<!-- ════════════ HOME ════════════ -->
+<div class="page active" id="page-home">
+  <div class="container">
+
+    <div class="hero-section">
+      <h1>⚖ Quantity Measurement Calculator</h1>
+      <p>Convert units, add, subtract, and divide quantities across Length, Weight, Volume &amp; Temperature. Free to use — no account needed.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="go('ops')">Start an Operation</button>
+        <button class="btn"             onclick="go('auth','register')">Create Account</button>
+      </div>
+    </div>
+
+    <p class="page-sub">Choose what you'd like to do:</p>
+
+    <div class="op-cards-grid">
+      <div class="op-card" onclick="go('ops','convert')">
+        <div class="oc-icon">🔄</div>
+        <h3>Convert</h3>
+        <p>Convert a value from one unit to another.</p>
+      </div>
+      <div class="op-card" onclick="go('ops','add')">
+        <div class="oc-icon">➕</div>
+        <h3>Add</h3>
+        <p>Add two quantities and get the result in any unit.</p>
+      </div>
+      <div class="op-card" onclick="go('ops','subtract')">
+        <div class="oc-icon">➖</div>
+        <h3>Subtract</h3>
+        <p>Subtract one quantity from another.</p>
+      </div>
+      <div class="op-card" onclick="go('ops','divide')">
+        <div class="oc-icon">➗</div>
+        <h3>Divide</h3>
+        <p>Divide one quantity by another.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════ OPERATIONS ════════════ -->
+<div class="page" id="page-ops">
+  <div class="container" style="max-width:740px">
+
+    <div class="page-title">Operations</div>
+    <div class="page-sub">All operations are free — no login required.</div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="convert"  onclick="switchTab('convert')">🔄 Convert</button>
+      <button class="tab"        data-tab="add"      onclick="switchTab('add')">➕ Add</button>
+      <button class="tab"        data-tab="subtract" onclick="switchTab('subtract')">➖ Subtract</button>
+      <button class="tab"        data-tab="divide"   onclick="switchTab('divide')">➗ Divide</button>
+    </div>
+
+    <!-- ── CONVERT ── -->
+    <div class="op-panel active" id="tp-convert">
+      <div class="card">
+        <div class="card-title">🔄 Unit Conversion</div>
+
+        <div class="form-row col-1">
+          <div class="form-group">
+            <label>Measurement Type</label>
+            <select id="cv-type" onchange="typeChange('cv')">
+              <option value="Length">Length</option>
+              <option value="Weight">Weight</option>
+              <option value="Volume">Volume</option>
+              <option value="Temperature">Temperature</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row col-3">
+          <div class="form-group">
+            <label>Value</label>
+            <input type="number" id="cv-val" placeholder="e.g. 12" step="any"/>
+          </div>
+          <div class="form-group">
+            <label>From Unit</label>
+            <select id="cv-from"></select>
+          </div>
+          <div class="form-group">
+            <label>To Unit</label>
+            <select id="cv-to"></select>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="cv-btn" onclick="runConvert()">Convert</button>
+
+        <div class="result-box" id="cv-res">
+          <div class="result-label">Result</div>
+          <div class="result-value" id="cv-rv"></div>
+          <div class="result-meta"  id="cv-rm"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ADD ── -->
+    <div class="op-panel" id="tp-add">
+      <div class="card">
+        <div class="card-title">➕ Addition</div>
+
+        <div class="form-row col-2">
+          <div class="form-group">
+            <label>Measurement Type</label>
+            <select id="add-type" onchange="typeChange('add')">
+              <option value="Length">Length</option>
+              <option value="Weight">Weight</option>
+              <option value="Volume">Volume</option>
+              <option value="Temperature">Temperature</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Result Unit</label>
+            <select id="add-tg"></select>
+          </div>
+        </div>
+
+        <div class="form-row col-2">
+          <div class="qty-block">
+            <div class="qty-block-label">First Quantity (Q1)</div>
+            <div class="form-row col-2">
+              <div class="form-group">
+                <label>Value</label>
+                <input type="number" id="add-v1" placeholder="e.g. 5" step="any"/>
+              </div>
+              <div class="form-group">
+                <label>Unit</label>
+                <select id="add-u1"></select>
+              </div>
+            </div>
+          </div>
+          <div class="qty-block">
+            <div class="qty-block-label">Second Quantity (Q2)</div>
+            <div class="form-row col-2">
+              <div class="form-group">
+                <label>Value</label>
+                <input type="number" id="add-v2" placeholder="e.g. 3" step="any"/>
+              </div>
+              <div class="form-group">
+                <label>Unit</label>
+                <select id="add-u2"></select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="add-btn" onclick="runAdd()">Add Quantities</button>
+        <div class="result-box" id="add-res">
+          <div class="result-label">Result</div>
+          <div class="result-value" id="add-rv"></div>
+          <div class="result-meta"  id="add-rm"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SUBTRACT ── -->
+    <div class="op-panel" id="tp-subtract">
+      <div class="card">
+        <div class="card-title">➖ Subtraction</div>
+
+        <div class="form-row col-2">
+          <div class="form-group">
+            <label>Measurement Type</label>
+            <select id="sub-type" onchange="typeChange('sub')">
+              <option value="Length">Length</option>
+              <option value="Weight">Weight</option>
+              <option value="Volume">Volume</option>
+              <option value="Temperature">Temperature</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Result Unit</label>
+            <select id="sub-tg"></select>
+          </div>
+        </div>
+
+        <div class="form-row col-2">
+          <div class="qty-block">
+            <div class="qty-block-label">First Quantity (Q1)</div>
+            <div class="form-row col-2">
+              <div class="form-group">
+                <label>Value</label>
+                <input type="number" id="sub-v1" placeholder="e.g. 10" step="any"/>
+              </div>
+              <div class="form-group">
+                <label>Unit</label>
+                <select id="sub-u1"></select>
+              </div>
+            </div>
+          </div>
+          <div class="qty-block">
+            <div class="qty-block-label">Second Quantity (Q2)</div>
+            <div class="form-row col-2">
+              <div class="form-group">
+                <label>Value</label>
+                <input type="number" id="sub-v2" placeholder="e.g. 4" step="any"/>
+              </div>
+              <div class="form-group">
+                <label>Unit</label>
+                <select id="sub-u2"></select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="sub-btn" onclick="runSubtract()">Subtract Quantities</button>
+        <div class="result-box" id="sub-res">
+          <div class="result-label">Result</div>
+          <div class="result-value" id="sub-rv"></div>
+          <div class="result-meta"  id="sub-rm"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DIVIDE ── -->
+    <div class="op-panel" id="tp-divide">
+      <div class="card">
+        <div class="card-title">➗ Division</div>
+
+        <div class="form-row col-1">
+          <div class="form-group">
+            <label>Measurement Type</label>
+            <select id="div-type" onchange="typeChange('div')">
+              <option value="Length">Length</option>
+              <option value="Weight">Weight</option>
+              <option value="Volume">Volume</option>
+              <option value="Temperature">Temperature</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row col-2">
+          <div class="qty-block">
+            <div class="qty-block-label">Dividend (Q1)</div>
+            <div class="form-row col-2">
+              <div class="form-group">
+                <label>Value</label>
+                <input type="number" id="div-v1" placeholder="e.g. 10" step="any"/>
+              </div>
+              <div class="form-group">
+                <label>Unit</label>
+                <select id="div-u1"></select>
+              </div>
+            </div>
+          </div>
+          <div class="qty-block">
+            <div class="qty-block-label">Divisor (Q2)</div>
+            <div class="form-row col-2">
+              <div class="form-group">
+                <label>Value</label>
+                <input type="number" id="div-v2" placeholder="e.g. 2" step="any"/>
+              </div>
+              <div class="form-group">
+                <label>Unit</label>
+                <select id="div-u2"></select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="div-btn" onclick="runDivide()">Divide</button>
+        <div class="result-box" id="div-res">
+          <div class="result-label">Result</div>
+          <div class="result-value" id="div-rv"></div>
+          <div class="result-meta"  id="div-rm"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════ AUTH ════════════ -->
+<div class="page" id="page-auth">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <div class="al-icon">⚖</div>
+      <h2 id="auth-h2">Welcome back</h2>
+      <p  id="auth-p">Sign in to access your history</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="atab-login"    onclick="switchAuth('login')">Sign In</button>
+      <button class="auth-tab"        id="atab-register" onclick="switchAuth('register')">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="af-login" class="auth-form">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="l-email" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="l-pass" placeholder="Your password"
+              onkeydown="if(event.key==='Enter') doLogin()"/>
+      </div>
+      <button class="btn btn-primary btn-full" id="l-btn" onclick="doLogin()">Sign In</button>
+      <div class="auth-msg" id="l-msg"></div>
+      <div class="auth-footer">
+        No account?
+        <a href="#" class="auth-link" onclick="switchAuth('register');return false">Register free →</a>
+      </div>
+    </div>
+
+    <!-- Register Form -->
+    <div id="af-register" class="auth-form" style="display:none">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="r-email" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="r-pass" placeholder="Create a password"
+              onkeydown="if(event.key==='Enter') doRegister()"/>
+      </div>
+      <button class="btn btn-primary btn-full" id="r-btn" onclick="doRegister()">Create Account</button>
+      <div class="auth-msg" id="r-msg"></div>
+      <div class="auth-footer">
+        Already have an account?
+        <a href="#" class="auth-link" onclick="switchAuth('login');return false">Sign in →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════ HISTORY ════════════ -->
+<div class="page" id="page-history">
+  <div class="container">
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div class="page-title">Operation History</div>
+        <div class="page-sub" style="margin-bottom:0">Your personal operation log from the database</div>
+      </div>
+      <button class="btn" onclick="loadHistory()">↻ Refresh</button>
+    </div>
+
+    <!-- Shown when NOT logged in -->
+    <div class="lock-banner" id="hist-lock" style="display:none">
+      <div style="font-size:2rem">🔐</div>
+      <h3>Sign in to view history</h3>
+      <p>Your operation history is stored against your account. Please sign in to access it.</p>
+      <button class="btn btn-primary" onclick="go('auth','login')">Sign In</button>
+    </div>
+
+    <!-- Shown when logged in -->
+    <div id="hist-data">
+      <div class="stats-bar">
+        <div class="stat-card"><div class="sc-label">Total</div><div class="sc-value" id="hs-total">–</div></div>
+        <div class="stat-card"><div class="sc-label">Conversions</div><div class="sc-value" id="hs-conv">–</div></div>
+        <div class="stat-card"><div class="sc-label">Arithmetic</div><div class="sc-value" id="hs-arith">–</div></div>
+        <div class="stat-card"><div class="sc-label">Categories</div><div class="sc-value" id="hs-cats">–</div></div>
+      </div>
+
+      <div class="filter-chips">
+        <button class="chip active" data-f="All"      onclick="filterHist('All',this)">All</button>
+        <button class="chip"        data-f="Convert"  onclick="filterHist('Convert',this)">Convert</button>
+        <button class="chip"        data-f="Add"      onclick="filterHist('Add',this)">Add</button>
+        <button class="chip"        data-f="Subtract" onclick="filterHist('Subtract',this)">Subtract</button>
+        <button class="chip"        data-f="Divide"   onclick="filterHist('Divide',this)">Divide</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Operation</th>
+              <th>Category</th>
+              <th>Input</th>
+              <th>Result</th>
+              <th>Time</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="hist-tbody">
+            <tr><td colspan="7" class="empty-row">No data yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<!-- JS loaded last so the DOM is ready -->
+<script src="app.js"></script>
+</body>
+</html>
