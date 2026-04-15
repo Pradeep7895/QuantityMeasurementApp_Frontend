@@ -1,0 +1,90 @@
+.navbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0;
+  color: #1a1a2e !important;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  min-height: 56px !important;
+  padding: 0 24px !important;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #2563eb;
+
+  svg { color: #2563eb; }
+}
+
+.brandText {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #2563eb !important;
+}
+
+.navLinks {
+  display: flex;
+  gap: 4px;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+.navBtn {
+  padding: 6px 14px !important;
+  border-radius: 6px !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: #555 !important;
+  text-transform: none !important;
+
+  &:hover {
+    background: #f0f2f5 !important;
+    color: #1a1a2e !important;
+  }
+
+  &.active {
+    background: #eff6ff !important;
+    color: #2563eb !important;
+  }
+}
+
+.authArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userChip {
+  font-size: 0.8rem !important;
+  border-color: #e0e0e0 !important;
+  background: #f0f2f5 !important;
+}
+
+.loginBtn {
+  text-transform: none !important;
+  border-color: #e0e0e0 !important;
+  color: #1a1a2e !important;
+  font-size: 0.875rem !important;
+
+  &:hover { background: #f5f5f5 !important; }
+}
+
+.signupBtn {
+  text-transform: none !important;
+  background: #2563eb !important;
+  font-size: 0.875rem !important;
+
+  &:hover { background: #1d4ed8 !important; }
+}
+
+.signOutBtn {
+  text-transform: none !important;
+  font-size: 0.82rem !important;
+}
